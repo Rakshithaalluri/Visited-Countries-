@@ -11,7 +11,7 @@ const CountryItem = props => {
 
   return (
     <li className="country-list-item">
-      {isVisited ? (
+      {isVisited && (
         <>
           <img src={imageUrl} alt="thumbnail" className="country-image" />
           <div className="country-details">
@@ -25,7 +25,7 @@ const CountryItem = props => {
             </button>
           </div>
         </>
-      ) : null}
+      )}
     </li>
   )
 }

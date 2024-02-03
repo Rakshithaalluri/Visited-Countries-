@@ -85,25 +85,46 @@ const initialCountriesList = [
 class App extends Component {
   state = {
     countriesList: initialCountriesList,
+    visitedCountries: initialCountriesList,
   }
 
   onVisit = id => {
-    this.setState(prevState => ({
+    const {countriesList} = this.state
+    const updatedCountry = countriesList.map(each => ({
+      ...each,
+      isVisited: each.id === id ? !each.isVisited : each.isVisited,
+    }))
+    this.setState({
+      countriesList: updatedCountry,
+      visitedCountries: updatedCountry,
+    })
+
+    /*  this.setState(prevState => ({
       countriesList: prevState.countriesList.map(country => ({
         ...country,
         isVisited: country.id === id ? !country.isVisited : country.isVisited,
       })),
     }))
+     */
   }
 
   countryRemove = id => {
+    const {visitedCountries} = this.state
+    const filteredList = visitedCountries.filter(each => each.id !== id)
+
     const {countriesList} = this.state
-    const filteredList = countriesList.filter(each => each.id !== id)
-    return this.setState({countriesList: filteredList})
+    const updateCountry = countriesList.map(each => ({
+      ...each,
+      isVisited: each.id === id ? null : each.isVisited,
+    }))
+    this.setState({
+      countriesList: updateCountry,
+      visitedCountries: filteredList,
+    })
   }
 
   render() {
-    const {countriesList} = this.state
+    const {countriesList, visitedCountries} = this.state
 
     return (
       <div className="bg-container">
@@ -132,15 +153,21 @@ class App extends Component {
         </div>
         <div className="visited-con-container">
           <h1 className="countries-heading"> Visited Countries </h1>
-          <ul className="visited-con-list">
-            {countriesList.map(eachCountry => (
-              <CountryItem
-                key={eachCountry.id}
-                countryDetails={eachCountry}
-                onRemoveItem={this.countryRemove}
-              />
-            ))}
-          </ul>
+          {visitedCountries.length < 0 ? (
+            <div>
+              <p> No Countries </p>
+            </div>
+          ) : (
+            <ul className="visited-con-list">
+              {visitedCountries.map(eachCountry => (
+                <CountryItem
+                  key={eachCountry.id}
+                  countryDetails={eachCountry}
+                  onRemoveItem={this.countryRemove}
+                />
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     )
